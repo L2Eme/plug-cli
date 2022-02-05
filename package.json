@@ -7,7 +7,7 @@
   },
   "main": "./dist/index.js",
   "types": "index.d.ts",
-  "repository": "",
+  "repository": "https://github.com/L2Eme/plug-cli",
   "author": "L2Eme <yume.site@outlook.com>",
   "license": "MIT",
   "devDependencies": {

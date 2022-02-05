@@ -60,6 +60,21 @@ export function helpCheck(this: ICliContext, handler: THandler) {
 }
 
 /**
+ * 显示debug消息
+ * @param handler 
+ * @returns 
+ */
+export const verboseCheck: TPlug<ICliContext> = function(handler) {
+	return (cmd: TCmd) => {
+		if (cmd.indexOf('--verbose') >= 0) {
+			this.setVerbose();
+			return handler(cmd);
+		}
+		return handler(cmd);
+	}
+}
+
+/**
  * Wrap a message to print of a sub-command.
  * @param doc 
  * @returns 
@@ -157,61 +172,6 @@ export const Ifp = (
 		}
 	}
 
-// /**
-//  * 执行下一个plug前，与控制台交互，请求输入隐秘内容。
-//  * @param paramName 
-//  * @param msg 
-//  * @param convert may throw an error to print some error message.
-//  * @returns 
-//  */
-// export const SecretQuestion = (paramName: string, msg: string, convert?: (msg: string) => any) =>
-// 	function (this: ICliContext, handler: THandler) {
-// 		return (cmd: TCmd) => {
-
-// 			if (this.isHelp) {
-// 				console.log(`- SecretQuestion: prompt secret input to ${paramName}.`)
-// 				return handler(cmd);
-// 			}
-
-// 			let inputMessage = rl.question(msg, { hideEchoBack: true });
-
-// 			convert && convert(inputMessage);
-
-// 			this.params[paramName] = inputMessage;
-// 			return handler(cmd);
-// 		}
-// 	}
-
-// /**
-//  * 确认密码输入，对比两次输入是否相同
-//  * @param paramName 
-//  * @param msg 
-//  * @param convert may throw an error to print some error message.
-//  * @returns 
-//  */
-// export const ConfirmedPasswordInput = (paramName: string, msg: string, convert?: (msg: string) => any) =>
-// 	function (this: ICliContext, handler: THandler) {
-// 		return (cmd: TCmd) => {
-
-// 			if (this.isHelp) {
-// 				console.log(`- PasswordInput: get password by input twice ${paramName}.`)
-// 				return handler(cmd);
-// 			}
-
-// 			let inputPasswd = rl.question(msg, { hideEchoBack: true });
-// 			let confirmedPasswd = rl.question(msg, { hideEchoBack: true });
-
-// 			if (inputPasswd != confirmedPasswd) {
-// 				throw new Error('two Password is not the same.')
-// 			}
-
-// 			convert && convert(inputPasswd);
-
-// 			this.params[paramName] = inputPasswd;
-// 			return handler(cmd);
-// 		}
-// 	}
-
 /**
  * 
  * 在cmd上收集指定param的数据，存放于数组中
@@ -271,7 +231,7 @@ export const GetParamOr = (paramName: string, defaultValue: any) =>
 		else return data[0];
 	})
 
-export const GetEnvOr = (envName: string, defaultValue?: any) =>
+export const GetEnvOr = (envName: string, defaultValue?: string) =>
 	function (this: ICliContext, handler: THandler) {
 		return (cmd: TCmd) => {
 
@@ -280,7 +240,7 @@ export const GetEnvOr = (envName: string, defaultValue?: any) =>
 				return handler(cmd);
 			}
 
-			this.env[envName] = process.env[envName] || defaultValue;
+			this.setEnv(envName, process.env[envName] || defaultValue);
 			handler(cmd);
 		}
 	}
@@ -297,12 +257,12 @@ export const GetFileParam = (paramName: string, convert?: (data: string) => any)
 					return handler(cmd);
 				}
 
-				let fileName = this.getParam(paramName, undefined);
+				let fileName = this.getParam(paramName);
 				if (fileName && existsSync(fileName)) {
 
 					// save file content to replace FileName
 					let d = readFileSync(fileName).toString();
-					this.params[paramName] = convert ? convert(d) : d;
+					this.store[paramName] = convert ? convert(d) : d;
 
 					return handler(cmd);
 				}
