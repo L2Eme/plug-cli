@@ -1,0 +1,39 @@
+{
+  "name": "@line100/plug-cli",
+  "version": "0.1.2",
+  "description": "Plug utils for cli.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "index.d.ts",
+  "repository": "",
+  "author": "L2Eme <yume.site@outlook.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^17.0.15"
+  },
+  "typesVersions": {
+    ">=4.2": {
+      "*": [
+        "dist/*"
+      ]
+    }
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./CliContext": "./dist/CliContext.js"
+  },
+  "files": [
+    "dist/index*.(js|ts)",
+    "dist/CliContext*.(js|ts)",
+    "CHANGELOG.md",
+    "README.md",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "dependencies": {
+    "@line100/plug": "^1.0.2",
+    "tslib": "^2.3.1"
+  }
+}
