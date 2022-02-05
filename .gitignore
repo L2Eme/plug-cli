@@ -1,0 +1,13 @@
+/node_modules
+npm-debug.log
+.env
+.DS_Store
+
+# 忽略一些文件
+**.secret.*
+**.data.*
+**.dev.*
+
+# 忽略dist和build
+/dist
+/build
